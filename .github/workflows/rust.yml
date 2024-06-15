@@ -28,10 +28,10 @@ jobs:
           - { target: aarch64-apple-darwin, os: macos-14 }
           - { target: x86_64-apple-darwin, os: macos-13 }
     runs-on: ${{ matrix.platform.os }}
-    env:
-      RUSTC_WRAPPER: sccache
-      CCACHE: sccache
-      SCCACHE_GHA_ENABLED: "true"
+    # env:
+      # RUSTC_WRAPPER: sccache
+      # CCACHE: sccache
+      # SCCACHE_GHA_ENABLED: "true"
     steps:
       - uses: actions/checkout@v4
       - name: Install deps
@@ -40,8 +40,8 @@ jobs:
           # https://github.com/actions/setup-python/issues/577
           brew list -1 | grep python | while read formula; do brew unlink $formula; brew link --overwrite $formula; done
           brew install llvm yasm
-      - name: Run sccache-cache
-        uses: mozilla-actions/sccache-action@v0.0.3
+      # - name: Run sccache-cache
+      #  uses: mozilla-actions/sccache-action@v0.0.3
       - name: Build
         run: |
           cargo build --verbose --features ${{ matrix.features }}
@@ -52,6 +52,7 @@ jobs:
         with:
           path: ./target/libmozjs-${{ matrix.platform.target }}.tar.gz
           name: libmozjs-${{ matrix.platform.target }}.tar.gz
+
 
   linux:
     env:
