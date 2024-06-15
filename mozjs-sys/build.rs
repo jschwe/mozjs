@@ -45,6 +45,7 @@ const SM_TARGET_ENV_VARS: &'static [&'static str] = &[
     "CPPFLAGS",
     "CXX",
     "CXXFLAGS",
+    "READELF",
 ];
 
 const EXTRA_FILES: &'static [&'static str] = &[
