@@ -8,8 +8,6 @@
 
 #  include "mozilla/TaggedAnonymousMemory.h"
 
-#  include <errno.h>
-#  include <hilog/log.h>
 #  include <sys/types.h>
 #  include <sys/mman.h>
 #  include <sys/prctl.h>
@@ -74,17 +72,7 @@ void MozTagAnonymousMemory(const void* aPtr, size_t aLength, const char* aTag) {
 void* MozTaggedAnonymousMmap(void* aAddr, size_t aLength, int aProt, int aFlags,
                              int aFd, off_t aOffset, const char* aTag) {
   void* mapped = mmap(aAddr, aLength, aProt, aFlags, aFd, aOffset);
-  if(mapped == MAP_FAILED) {
-    int err = errno;
-    char* error_msg = strerror(err);
-    (void) OH_LOG_Print(LOG_APP, LOG_ERROR, 0, "Gecko/alloc", "mmap error: %{public}s\n", error_msg);
-    if (err == EINVAL) {
-          (void) OH_LOG_Print(LOG_APP, LOG_ERROR, 0, "Gecko/alloc",
-           "mmap args were: addr: %{public}p, length: 0x%{public}lx, prot: 0x%{public}x, flags: 0x%{public}x, fd: %{public}d, offset: %{public}ld\n",
-            aAddr, aLength, aProt, aFlags, aFd, (long) aOffset);
-    }
-
-  } else if ((aFlags & MAP_ANONYMOUS) == MAP_ANONYMOUS) {
+  if ((aFlags & MAP_ANONYMOUS) == MAP_ANONYMOUS && mapped != MAP_FAILED) {
     // Ignore the return value. TagAnonymousMemoryAligned will harmlessly fail
     // on kernels without CONFIG_ANON_VMA_NAME.
     mozilla::TagAnonymousMemoryAligned(mapped, aLength, aTag);
