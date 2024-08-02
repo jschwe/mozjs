@@ -584,9 +584,13 @@ static unsigned ProtectionSettingToFlags(ProtectionSetting protection) {
 #    endif
   return true;
 #  else
-  unsigned flags = ProtectionSettingToFlags(protection);
-  void* p = MozTaggedAnonymousMmap(addr, bytes, flags,
-                                   MAP_FIXED | MAP_PRIVATE | MAP_ANON, -1, 0,
+  unsigned prot_flags = ProtectionSettingToFlags(protection);
+  int flags =  MAP_FIXED | MAP_PRIVATE | MAP_ANON;
+  // Allows JIT in custom applications on debug versions of HOS.
+  // todo: If HarmonyOS NEXT / of if HM kernel / or retry on OH if failed.
+  flags |= MAP_EXECUTABLE;
+  void* p = MozTaggedAnonymousMmap(addr, bytes, prot_flags,
+                                   flags, -1, 0,
                                    "js-executable-memory");
   if (p == MAP_FAILED) {
     return false;
