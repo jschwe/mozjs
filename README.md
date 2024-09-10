@@ -1,5 +1,7 @@
 # Mozjs (Rust bindings for SpiderMonkey)
 
+Just some testing hahahaha
+
 This repository contains Rust bindings for [SpiderMonkey](https://spidermonkey.dev/)
 that are battle-tested in [Servo](https://servo.org/), split in two crates:
 
