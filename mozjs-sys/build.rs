@@ -13,6 +13,7 @@ use std::fs::File;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::str;
+use std::time::Instant;
 use tar::Archive;
 use walkdir::WalkDir;
 
@@ -922,6 +923,39 @@ fn download_archive(base: Option<&str>) -> Result<PathBuf, std::io::Error> {
             .success()
         {
             return Err(std::io::Error::from(std::io::ErrorKind::NotFound));
+        }
+        if target.contains("ohos") {
+            let start = Instant::now();
+            if Command::new("gh")
+                .arg("attestation")
+                .arg("--help")
+                .status()
+                .is_ok()
+            {
+                eprintln!(
+                    "Couldn't find `gh` or `gh` version too old. Skipping verification of artifact."
+                );
+            } else {
+                let mut attestation_cmd = Command::new("gh");
+                attestation_cmd
+                    .arg("attestation")
+                    .arg("verify")
+                    .arg(&archive_path)
+                    .arg("-R")
+                    .arg("servo/mozjs");
+                if let Err(output) = attestation_cmd.output() {
+                    eprintln!("Failed to verify the artifact downloaded from CI: {output:?}");
+                    // Remove the file so the build-script will redownload next time.
+                    let _ = fs::remove_file(&archive_path).inspect_err(|e| {
+                        eprintln!("Failed to delete archive: {e}");
+                    });
+                }
+            }
+            let attestation_duration = start.elapsed();
+            eprintln!(
+                "Artifact evaluation took {} ms",
+                attestation_duration.as_millis()
+            );
         }
     }
 
