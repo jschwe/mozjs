@@ -15,10 +15,16 @@
 # Remove smoosh crate, it's Rust code and this is experimental anyway.
 - /js/src/frontend/smoosh
 
+# Does not seem to be required for building
+- /intl/icu
+
 # Get rid of all the internal Rust code cause crates.io really doesn't like that.
 - /build/moz.configure/rust.configure
 - /build/workspace-hack
 - /build/rust
+- /intl/bidi
+- /intl/icu_capi
+- /intl/icu_segmenter_data
 - /js/rust
 - /js/src/build.rs
 - /js/src/Cargo.toml
