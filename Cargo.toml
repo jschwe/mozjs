@@ -1,5 +1,6 @@
 [workspace]
 members = ["mozjs-sys", "mozjs"]
+default-members = ["mozjs-sys", "mozjs"]
 resolver = "2"
 
 [workspace.package]
