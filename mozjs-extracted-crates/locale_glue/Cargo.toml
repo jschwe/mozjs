@@ -1,0 +1,13 @@
+[package]
+license = "MPL-2.0"
+links = "locale_glue"
+name = "mozjs_locale_glue"
+version = "153.0.0"
+edition = "2021"
+rust-version.workspace = true
+
+[dependencies]
+icu_locale = { version = "2.1.1", features = ["compiled_data"] }
+
+[build-dependencies.cbindgen]
+version = "0.29.4"
